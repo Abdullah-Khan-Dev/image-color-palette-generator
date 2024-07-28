@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Color Extractor</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .color-block { display: inline-block; width: 100px; height: 100px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Upload an Image to Extract Top 10 Colors</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit">Upload Image</button>
+    </form>
+    <div id="colors"></div>
+
+    <script>
+        async function getColors(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData,
+            });
+            const colors = await response.json();
+            const colorsDiv = document.getElementById('colors');
+            colorsDiv.innerHTML = '';
+            colors.forEach(color => {
+                const div = document.createElement('div');
+                div.className = 'color-block';
+                div.style.backgroundColor = color;
+                div.title = color;
+                colorsDiv.appendChild(div);
+            });
+        }
+
+        document.querySelector('form').addEventListener('submit', getColors);
+    </script>
+</body>
+</html>
